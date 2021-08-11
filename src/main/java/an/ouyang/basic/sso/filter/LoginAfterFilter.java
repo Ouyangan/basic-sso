@@ -1,7 +1,7 @@
 package an.ouyang.basic.sso.filter;
 
 import an.ouyang.basic.sso.LoginToken;
-import an.ouyang.basic.sso.LoginVerifyParam;
+import an.ouyang.basic.sso.LoginParam;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Triple;
  */
 public interface LoginAfterFilter {
 
-    void filter(LoginVerifyParam loginVerifyParam, Triple<Integer, String, LoginToken> result);
+    void filter(LoginParam loginParam, Triple<Integer, String, LoginToken> result);
 
     int getOrder();
 }

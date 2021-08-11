@@ -4,7 +4,7 @@ package an.ouyang.basic.sso.service;
 import an.ouyang.basic.sso.LoginPreParam;
 import an.ouyang.basic.sso.LoginToken;
 import an.ouyang.basic.sso.LoginType;
-import an.ouyang.basic.sso.LoginVerifyParam;
+import an.ouyang.basic.sso.LoginParam;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
@@ -29,7 +29,7 @@ public interface LoginService {
     /**
      * 登录接口
      */
-    Triple<Integer, String, LoginToken> login(LoginVerifyParam loginVerifyParam);
+    Triple<Integer, String, LoginToken> login(LoginParam loginParam);
 
     /**
      * 登出

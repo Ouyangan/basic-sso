@@ -4,7 +4,7 @@ package an.ouyang.basic.sso;
 /**
  * 登录参数
  */
-public interface LoginVerifyParam extends LoginPreParam {
+public interface LoginParam extends LoginPreParam {
 
     /**
      * 登录凭证,可以是密码,验证码,oauth2.code(授权码)

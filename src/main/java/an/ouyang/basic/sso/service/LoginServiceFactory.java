@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @Component
 public class LoginServiceFactory implements DisposableBean {
+
     public static Map<String, LoginService> map = new HashMap<>();
 
     public LoginService get(LoginType loginType) {

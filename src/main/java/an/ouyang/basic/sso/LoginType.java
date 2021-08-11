@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 public enum LoginType {
     namePw(7, TimeUnit.DAYS),
     mobilePw(7, TimeUnit.DAYS),
+    emailPw(7, TimeUnit.DAYS),
     mobileCode(7, TimeUnit.DAYS),
     qqOauth2(7, TimeUnit.DAYS),
     wechatOauth2(7, TimeUnit.DAYS),

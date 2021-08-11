@@ -4,8 +4,8 @@ package an.ouyang.basic.sso.support.mobilecode;
 import an.ouyang.basic.sso.LoginPreParam;
 import an.ouyang.basic.sso.LoginToken;
 import an.ouyang.basic.sso.LoginType;
-import an.ouyang.basic.sso.LoginVerifyParam;
-import an.ouyang.basic.sso.filter.BlackListPreFilter;
+import an.ouyang.basic.sso.LoginParam;
+import an.ouyang.basic.sso.filter.BlackListBeforeFilter;
 import an.ouyang.basic.sso.filter.RenewalTokenAfterFilter;
 import an.ouyang.basic.sso.service.AbstractLoginService;
 import an.ouyang.basic.sso.service.LoginStore;
@@ -30,12 +30,13 @@ public class MobileCodeLoginService extends AbstractLoginService {
     @Override
     public void init() {
         super.init();
-        addPreFilter(new BlackListPreFilter(stringRedisTemplate));
+        addBeforeFilter(new BlackListBeforeFilter(stringRedisTemplate));
         addAfterFilter(new RenewalTokenAfterFilter(getLoginStore()));
     }
 
     @Override
-    protected Triple<Integer, String, LoginToken> doLogin(LoginVerifyParam loginVerifyParam) {
+    protected Triple<Integer, String, LoginToken> doLogin(LoginParam loginParam) {
+
         throw new RuntimeException("todo");
     }
 
@@ -45,8 +46,8 @@ public class MobileCodeLoginService extends AbstractLoginService {
     }
 
     @Override
-    public Triple<Integer, String, Object> preLogin(LoginPreParam loginPreParam) {
-        throw new RuntimeException("todo");
+    protected Triple<Integer, String, Object> doPreLogin(LoginPreParam loginParam) {
+        return null;
     }
 
     @Override

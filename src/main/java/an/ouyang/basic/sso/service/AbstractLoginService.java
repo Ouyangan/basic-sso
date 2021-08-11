@@ -1,8 +1,10 @@
 package an.ouyang.basic.sso.service;
 
+import an.ouyang.basic.sso.LoginParam;
+import an.ouyang.basic.sso.LoginPreParam;
 import an.ouyang.basic.sso.LoginToken;
-import an.ouyang.basic.sso.LoginVerifyParam;
 import an.ouyang.basic.sso.filter.LoginAfterFilter;
+import an.ouyang.basic.sso.filter.LoginBeforeFilter;
 import an.ouyang.basic.sso.filter.LoginLogAfterFilter;
 import an.ouyang.basic.sso.filter.LoginPreFilter;
 import org.apache.commons.lang3.tuple.Triple;
@@ -10,30 +12,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public abstract class AbstractLoginService extends AbstractLoginFilterService implements LoginService, InitializingBean {
     private final static Logger log = LoggerFactory.getLogger(AbstractLoginService.class);
 
-    private final List<LoginPreFilter> loginPreFilters = new ArrayList<>();
-
-    private final List<LoginAfterFilter> loginAfterFilters = new ArrayList<>();
-
+    @Override
+    public Triple<Integer, String, Object> preLogin(LoginPreParam loginPreParam) {
+        for (LoginPreFilter loginPreFilter : loginPreFilters) {
+            Triple<Integer, String, LoginParam> filter = loginPreFilter.filter(loginPreParam);
+            if (filter.getLeft() != 0) {
+                return Triple.of(filter.getLeft(), filter.getMiddle(), null);
+            }
+        }
+        return doPreLogin(loginPreParam);
+    }
 
     @Override
-    public Triple<Integer, String, LoginToken> login(LoginVerifyParam loginVerifyParam) {
+    public Triple<Integer, String, LoginToken> login(LoginParam loginParam) {
         //前置过滤器
-        for (LoginPreFilter loginPreFilter : loginPreFilters) {
-            Triple<Integer, String, LoginVerifyParam> preFilterResult = loginPreFilter.filter(loginVerifyParam);
+        for (LoginBeforeFilter loginBeforeFilter : loginBeforeFilters) {
+            Triple<Integer, String, LoginParam> preFilterResult = loginBeforeFilter.filter(loginParam);
             if (preFilterResult.getLeft() != 0) {
                 return Triple.of(preFilterResult.getLeft(), preFilterResult.getMiddle(), null);
             }
         }
         //登录
-        Triple<Integer, String, LoginToken> loginResult = doLogin(loginVerifyParam);
+        Triple<Integer, String, LoginToken> loginResult = doLogin(loginParam);
         //持久化token
         if (loginResult.getLeft().equals(0)) {
             getLoginStore().put(
@@ -44,12 +50,15 @@ public abstract class AbstractLoginService extends AbstractLoginFilterService im
         }
         //后置过滤器
         for (LoginAfterFilter loginAfterFilter : loginAfterFilters) {
-            loginAfterFilter.filter(loginVerifyParam, loginResult);
+            loginAfterFilter.filter(loginParam, loginResult);
         }
         return loginResult;
     }
 
-    protected abstract Triple<Integer, String, LoginToken> doLogin(LoginVerifyParam loginVerifyParam);
+    protected abstract Triple<Integer, String, LoginToken> doLogin(LoginParam loginParam);
+
+    protected abstract Triple<Integer, String, Object> doPreLogin(LoginPreParam loginParam);
+
 
     @Override
     public boolean logout(String token) {
@@ -92,7 +101,7 @@ public abstract class AbstractLoginService extends AbstractLoginFilterService im
 
     @Override
     public void close() {
-        loginPreFilters.clear();
+        loginBeforeFilters.clear();
         loginAfterFilters.clear();
     }
 
