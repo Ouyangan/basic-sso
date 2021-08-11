@@ -3,23 +3,24 @@ package an.ouyang.basic.sso.service;
 import an.ouyang.basic.sso.LoginToken;
 import an.ouyang.basic.sso.LoginVerifyParam;
 import an.ouyang.basic.sso.filter.LoginAfterFilter;
+import an.ouyang.basic.sso.filter.LoginLogAfterFilter;
 import an.ouyang.basic.sso.filter.LoginPreFilter;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class AbstractLoginService extends AbstractLoginFilterService implements LoginService {
+public abstract class AbstractLoginService extends AbstractLoginFilterService implements LoginService, InitializingBean {
     private final static Logger log = LoggerFactory.getLogger(AbstractLoginService.class);
 
     private final List<LoginPreFilter> loginPreFilters = new ArrayList<>();
 
     private final List<LoginAfterFilter> loginAfterFilters = new ArrayList<>();
-
 
 
     @Override
@@ -83,4 +84,20 @@ public abstract class AbstractLoginService extends AbstractLoginFilterService im
         return getLoginType().key(UUID.randomUUID().toString());
     }
 
+    @Override
+    public void init() {
+        addAfterFilter(new LoginLogAfterFilter());
+        LoginServiceFactory.map.put(getLoginType().name(), this);
+    }
+
+    @Override
+    public void close() {
+        loginPreFilters.clear();
+        loginAfterFilters.clear();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        init();
+    }
 }

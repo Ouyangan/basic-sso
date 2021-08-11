@@ -11,6 +11,10 @@ import org.apache.commons.lang3.tuple.Triple;
  * 登录接口定义
  */
 public interface LoginService {
+    void init();
+
+    void close();
+
     /**
      * 登录类型
      */

@@ -7,16 +7,17 @@ import an.ouyang.basic.sso.LoginType;
 import an.ouyang.basic.sso.LoginVerifyParam;
 import an.ouyang.basic.sso.filter.BlackListPreFilter;
 import an.ouyang.basic.sso.filter.RenewalTokenAfterFilter;
-import an.ouyang.basic.sso.service.*;
+import an.ouyang.basic.sso.service.AbstractLoginService;
+import an.ouyang.basic.sso.service.LoginStore;
+import an.ouyang.basic.sso.service.RedisLoginStore;
 import org.apache.commons.lang3.tuple.Triple;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
 @Component
-public class MobileCodeLoginService extends AbstractLoginService implements InitializingBean, ServiceLifeCycle {
+public class MobileCodeLoginService extends AbstractLoginService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -31,12 +32,6 @@ public class MobileCodeLoginService extends AbstractLoginService implements Init
         super.init();
         addPreFilter(new BlackListPreFilter(stringRedisTemplate));
         addAfterFilter(new RenewalTokenAfterFilter(getLoginStore()));
-        LoginServiceFactory.map.put(getLoginType().name(), this);
-    }
-
-    @Override
-    public void afterPropertiesSet() {
-        init();
     }
 
     @Override
