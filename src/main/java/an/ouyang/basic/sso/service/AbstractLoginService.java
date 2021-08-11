@@ -20,6 +20,8 @@ public abstract class AbstractLoginService extends AbstractLoginFilterService im
 
     private final List<LoginAfterFilter> loginAfterFilters = new ArrayList<>();
 
+
+
     @Override
     public Triple<Integer, String, LoginToken> login(LoginVerifyParam loginVerifyParam) {
         //前置过滤器

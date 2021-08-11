@@ -1,5 +1,7 @@
 package an.ouyang.basic.sso.service;
 
-public interface ServiceInit {
+public interface ServiceLifeCycle {
     void init();
+
+    void close();
 }

@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 登录日志,最后执行
+ */
 public class LoginLogAfterFilter implements LoginAfterFilter {
 
 
@@ -15,7 +18,7 @@ public class LoginLogAfterFilter implements LoginAfterFilter {
 
     @Override
     public void filter(LoginVerifyParam loginVerifyParam, Triple<Integer, String, LoginToken> result) {
-        log.info("登录日志.耗时={} param={},code={} msg={} data={}",
+        log.info("账户登录. 耗时={} param={},code={} msg={} data={}",
                 TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - loginVerifyParam.getCreateTime()),
                 loginVerifyParam,
                 result.getLeft(),
