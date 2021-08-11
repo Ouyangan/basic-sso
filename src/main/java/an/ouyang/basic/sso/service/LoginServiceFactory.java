@@ -16,6 +16,6 @@ public class LoginServiceFactory {
         if (Objects.isNull(loginService)) {
             throw new RuntimeException("登录类型未实现" + loginType.name());
         }
-        return map.get(loginType.name());
+        return loginService;
     }
 }
