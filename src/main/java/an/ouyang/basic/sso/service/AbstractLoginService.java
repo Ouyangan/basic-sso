@@ -6,7 +6,6 @@ import an.ouyang.basic.sso.LoginToken;
 import an.ouyang.basic.sso.filter.LoginAfterFilter;
 import an.ouyang.basic.sso.filter.LoginBeforeFilter;
 import an.ouyang.basic.sso.filter.LoginLogAfterFilter;
-import an.ouyang.basic.sso.filter.LoginPreFilter;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +17,6 @@ import java.util.UUID;
 public abstract class AbstractLoginService extends AbstractLoginFilterService implements LoginService, InitializingBean {
     private final static Logger log = LoggerFactory.getLogger(AbstractLoginService.class);
 
-    @Override
-    public Triple<Integer, String, Object> preLogin(LoginPreParam loginPreParam) {
-        for (LoginPreFilter loginPreFilter : loginPreFilters) {
-            Triple<Integer, String, LoginParam> filter = loginPreFilter.filter(loginPreParam);
-            if (filter.getLeft() != 0) {
-                return Triple.of(filter.getLeft(), filter.getMiddle(), null);
-            }
-        }
-        return doPreLogin(loginPreParam);
-    }
 
     @Override
     public Triple<Integer, String, LoginToken> login(LoginParam loginParam) {
@@ -56,9 +45,6 @@ public abstract class AbstractLoginService extends AbstractLoginFilterService im
     }
 
     protected abstract Triple<Integer, String, LoginToken> doLogin(LoginParam loginParam);
-
-    protected abstract Triple<Integer, String, Object> doPreLogin(LoginPreParam loginParam);
-
 
     @Override
     public boolean logout(String token) {

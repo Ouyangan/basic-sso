@@ -46,7 +46,7 @@ public class MobileCodeLoginService extends AbstractLoginService {
     }
 
     @Override
-    protected Triple<Integer, String, Object> doPreLogin(LoginPreParam loginParam) {
+    public Triple<Integer, String, Object> preLogin(LoginPreParam loginPreParam) {
         return null;
     }
 
